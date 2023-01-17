@@ -18,12 +18,11 @@ class BallMovement {
   direction: Vector3;
   constructor(direction: Vector3) {
     this.direction = direction;
-    t;
   }
 }
 
-const teamAScore = 0;
-const teamBScore = 0;
+let teamAScore = 0;
+let teamBScore = 0;
 
 const ghost = new Entity();
 
@@ -54,10 +53,13 @@ class BallSystem implements ISystem {
       ball.getComponent(BallMovement).direction.x =
         ball.getComponent(BallMovement)?.direction.x * -1;
     }
+
     if (ball.getComponent(Transform).position.x < 1) {
+      // reset();
       ball.getComponent(BallMovement).direction.x =
         ball.getComponent(BallMovement)?.direction.x * -1;
     }
+
     // east boundary
     // if (ball.getComponent(Transform).position.z < 1) {
     //   ball.getComponent(BallMovement).direction.x =
@@ -68,26 +70,57 @@ class BallSystem implements ISystem {
     //     ball.getComponent(BallMovement)?.direction.x * -1;
     // }
 
-    // // east boundary
+    // // west boundary
     // if (ball.getComponent(Transform).position.z > 1) {
     //   ball.getComponent(BallMovement).direction.x =
     //     ball.getComponent(BallMovement)?.direction.x * -1;
     // }
+
+    if (ball.getComponent(Transform).position.z > 63) {
+      // reset("teamBScore");
+      ball.getComponent(BallMovement).direction.z =
+        ball.getComponent(BallMovement)?.direction.z * -1;
+    }
+
+    if (ball.getComponent(Transform).position.z < 1) {
+      reset("teamAScore");
+      ball.getComponent(BallMovement).direction.z =
+        ball.getComponent(BallMovement)?.direction.z * -1;
+    }
+
     // if (ball.getComponent(Transform).position.z < 63) {
+    //   log("North boundary Team B");
+    //   teamAScore++;
+    //   // // reset();
     //   ball.getComponent(BallMovement).direction.x =
     //     ball.getComponent(BallMovement)?.direction.x * -1;
     // }
 
-    // WA
+    function reset(teamScore: string): void {
+      if (teamScore === "teamAScore") {
+        teamAScore++;
+        log("teamAScore", teamAScore);
+        ball.getComponentOrCreate(Transform).position = new Vector3(8, 0.8, 8);
+        ball.removeComponent(BallMovement);
+      }
 
-    if (ball.getComponent(Transform).position.z > 63) {
-      ball.getComponent(BallMovement).direction.z =
-        ball.getComponent(BallMovement)?.direction.z * -1;
+      if (teamScore === "teamBScore") {
+        teamBScore++;
+        log("teamBScore", teamBScore);
+        ball.getComponentOrCreate(Transform).position = new Vector3(8, 0.8, 60);
+        ball.removeComponent(BallMovement);
+      }
+      
     }
+    // WA
   }
 }
+
 engine.addSystem(new BallSystem());
 
+function reset() {
+  throw new Error("Function not implemented.");
+}
 // const point1 = new Vector3(8, 0, 8)
 // const point2 = new Vector3(8, 0, 24)
 // const point3 = new Vector3(24, 0, 24)
