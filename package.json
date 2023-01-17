@@ -26,8 +26,5 @@
   },
   "bundledDependencies": [
     "dcldash"
-  ],
-  "bundleDependencies": [
-    "dcldash"
   ]
 }
